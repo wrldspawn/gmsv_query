@@ -2,7 +2,7 @@
 #include <main.hpp>
 #include <GarrysMod/Lua/Interface.h>
 #include <GarrysMod/Lua/LuaInterface.h>
-#include <GarrysMod/Interfaces.hpp>
+#include <GarrysMod/FactoryLoader.hpp>
 #include <stdint.h>
 #include <stddef.h>
 #include <set>
