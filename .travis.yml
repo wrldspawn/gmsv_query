@@ -42,6 +42,6 @@ deploy:
   skip_cleanup: true
   provider: releases
   api_key: $GITHUB_KEY
-  file: "${TRAVIS_BUILD_DIR}/projects/linux/gmake/release/gmsv_query_linux.dll"
+  file: "${TRAVIS_BUILD_DIR}/projects/linux/gmake/x86/Release/gmsv_query_linux.dll"
   on:
     repo: tomekb530/gmsv_query
