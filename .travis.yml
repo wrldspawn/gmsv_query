@@ -36,10 +36,11 @@ install:
   latest changes"; git -C "$GARRYSMOD_COMMON" pull; git -C "$GARRYSMOD_COMMON" submodule
   update --init --recursive; fi
 script: "$BUILD_SCRIPT"
+before_deploy: "zip ${TRAVIS_BUILD_DIR}/projects/${PROJECT_OS}/${COMPILER_PLATFORM}/release/out.zip ${TRAVIS_BUILD_DIR}/projects/${PROJECT_OS}/${COMPILER_PLATFORM}/release/*"
 deploy:
   skip_cleanup: true
   provider: releases
   api_key: $GITHUB_KEY
-  file: "${TRAVIS_BUILD_DIR}/projects/${PROJECT_OS}/${COMPILER_PLATFORM}/release/gmsv_${MODULE_NAME}_${TARGET_OS}.dll"
+  file: "${TRAVIS_BUILD_DIR}/projects/${PROJECT_OS}/${COMPILER_PLATFORM}/release/out.zip"
   on:
     repo: tomekb530/gmsv_query
