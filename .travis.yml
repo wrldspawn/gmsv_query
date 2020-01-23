@@ -42,4 +42,4 @@ deploy:
   api_key: $GITHUB_KEY
   file: "${TRAVIS_BUILD_DIR}/projects/${PROJECT_OS}/${COMPILER_PLATFORM}/release/gmsv_${MODULE_NAME}_${TARGET_OS}.dll"
   on:
-    repo: DuckyC/gmsv_query
+    repo: tomekb530/gmsv_query
