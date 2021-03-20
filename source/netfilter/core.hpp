@@ -1,14 +1,10 @@
 #pragma once
 
-#include <stdint.h>
-#include <sstream>
-
 namespace GarrysMod
 {
 	namespace Lua
 	{
 		class ILuaBase;
-		class ILuaInterface;
 	}
 }
 

@@ -1,38 +1,29 @@
-#include <main.hpp>
-#include <netfilter.hpp>
+#include "main.hpp"
+#include "netfilter/core.hpp"
+#include "filecheck.hpp"
+
 #include <GarrysMod/Lua/Interface.h>
+#include <GarrysMod/InterfacePointers.hpp>
+#include <Platform.hpp>
 
-#if defined __APPLE__
-
-#include <AvailabilityMacros.h>
-
-#if MAC_OS_X_VERSION_MIN_REQUIRED > 1050
-
-#error The only supported compilation platform for this project on Mac OS X is GCC with Mac OS X 10.5 SDK (for ABI reasons).
-
-#endif
-
-#endif
+#include <iserver.h>
 
 namespace global
 {
-
-	SourceSDK::FactoryLoader engine_loader( "engine", false, true, "bin/" );
-	std::string engine_lib = Helpers::GetBinaryFileName( "engine", false, true, "bin/" );
+	SourceSDK::FactoryLoader engine_loader( "engine" );
+	IServer *server = nullptr;
 
 	static void PreInitialize( GarrysMod::Lua::ILuaBase *LUA )
 	{
-		if( !engine_loader.IsValid( ) )
-			LUA->ThrowError( "unable to get engine factory" );
+		server = InterfacePointers::Server( );
+		if( server == nullptr )
+			LUA->ThrowError( "failed to dereference IServer" );
 
 		LUA->CreateTable( );
 
-		LUA->PushString( "Query 1.1" );
+		LUA->PushString( "query 1.0" );
 		LUA->SetField( -2, "Version" );
 
-		// version num follows LuaJIT style, xxyyzz
-		LUA->PushNumber( 010000 );
-		LUA->SetField( -2, "VersionNum" );
 	}
 
 	static void Initialize( GarrysMod::Lua::ILuaBase *LUA )
@@ -45,19 +36,20 @@ namespace global
 		LUA->PushNil( );
 		LUA->SetField( GarrysMod::Lua::INDEX_GLOBAL, "query" );
 	}
-
 }
 
 GMOD_MODULE_OPEN( )
 {
 	global::PreInitialize( LUA );
 	netfilter::Initialize( LUA );
+	filecheck::Initialize( LUA );
 	global::Initialize( LUA );
 	return 1;
 }
 
 GMOD_MODULE_CLOSE( )
 {
+	filecheck::Deinitialize( LUA );
 	netfilter::Deinitialize( LUA );
 	global::Deinitialize( LUA );
 	return 0;
