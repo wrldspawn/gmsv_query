@@ -957,6 +957,15 @@ namespace netfilter
 		return 0;
 	}
 
+	LUA_FUNCTION_STATIC( EnableInfoCache )
+	{
+		LUA->CheckType( 1, GarrysMod::Lua::Type::Bool );
+		info_cache_enabled = LUA->GetBool( 1 );
+		return 0;
+	}
+
+	LUA->PushCFunction( EnableInfoCache );
+	LUA->SetField( -2, "EnableInfoDetour" );
 
 	void Initialize( GarrysMod::Lua::ILuaBase *LUA )
 	{
