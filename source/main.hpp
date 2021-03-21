@@ -6,7 +6,7 @@
 
 #include <string>
 #include <vector>
-#define DEBUG
+//#define DEBUG
 #if defined DEBUG
 
 #include <dbg.h>
@@ -17,8 +17,8 @@
 
 #else
 
-//#define _DebugMsg( ... )
-//#define _DebugWarning( ... )
+#define _DebugMsg( ... )
+#define _DebugWarning( ... )
 
 #endif
 

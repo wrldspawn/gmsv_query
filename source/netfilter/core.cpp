@@ -205,7 +205,7 @@ namespace netfilter
 
 	static constexpr char default_game_version[] = "2019.11.12";
 	static constexpr uint8_t default_proto_version = 17;
-	static bool info_cache_enabled = true;
+	static bool info_cache_enabled = false;
 	static reply_info_t reply_info;
 	static char info_cache_buffer[1024] = { 0 };
 	static bf_write info_cache_packet( info_cache_buffer, sizeof( info_cache_buffer ) );
@@ -964,8 +964,7 @@ namespace netfilter
 		return 0;
 	}
 
-	LUA->PushCFunction( EnableInfoCache );
-	LUA->SetField( -2, "EnableInfoDetour" );
+
 
 	void Initialize( GarrysMod::Lua::ILuaBase *LUA )
 	{
@@ -1009,6 +1008,9 @@ namespace netfilter
 			LUA->ThrowError( "unable to create thread" );
 
 		BuildStaticReplyInfo( );
+
+		LUA->PushCFunction( EnableInfoCache );
+		LUA->SetField( -2, "EnableInfoDetour" );
 
 	}
 
