@@ -604,6 +604,7 @@ namespace netfilter
 		{
 			player_t player = newreply.players[i];
 
+			lua->PushNumber(i + 1);
 			lua->CreateTable();
 
 			lua->PushString(player.name.c_str());
@@ -615,7 +616,6 @@ namespace netfilter
 			lua->PushNumber(player.time);
 			lua->SetField(-2, "time");
 
-			lua->PushNumber(i + 1);
 			lua->SetTable(-3);
 		}
 
