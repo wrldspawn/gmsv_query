@@ -595,7 +595,6 @@ namespace netfilter
 			lua->PushString(hook);
 		}
 
-		lua->PushString(hook);
 		lua->PushString(inet_ntoa(from.sin_addr));
 		lua->PushNumber(27015);
 
