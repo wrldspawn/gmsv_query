@@ -616,9 +616,7 @@ namespace netfilter
 			lua->SetField(-2, "time");
 
 			lua->PushNumber(i + 1);
-			lua->Push(-2);
-			lua->Remove(-3);
-			lua->RawSet(-3);
+			lua->SetTable(-2);
 		}
 
 		lua->CallFunctionProtected(4, 1, true);
