@@ -598,28 +598,7 @@ namespace netfilter
 		lua->PushString(inet_ntoa(from.sin_addr));
 		lua->PushNumber(27015);
 
-		lua->CreateTable();
-
-		for (int i = 0; i < newreply.count; i++)
-		{
-			player_t player = newreply.players[i];
-
-			lua->PushNumber(i + 1);
-			lua->CreateTable();
-
-			lua->PushString(player.name.c_str());
-			lua->SetField(-2, "name");
-
-			lua->PushNumber(player.score);
-			lua->SetField(-2, "score");
-
-			lua->PushNumber(player.time);
-			lua->SetField(-2, "time");
-
-			lua->SetTable(-3);
-		}
-
-		lua->CallFunctionProtected(4, 1, true);
+		lua->CallFunctionProtected(3, 1, true);
 
 		if (lua->IsType(-1, GarrysMod::Lua::Type::BOOL))
 		{
