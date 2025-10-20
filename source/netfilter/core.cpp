@@ -300,7 +300,7 @@ namespace netfilter
 	static void BuildReplyInfo( )
 	{
 		const char *server_name = global::server->GetName( );
-		
+
 		reply_info.game_name = server_name;
 
 		const char *map_name = global::server->GetMapName( );
@@ -397,7 +397,7 @@ namespace netfilter
 		if (!lua->IsType(-1, GarrysMod::Lua::Type::TABLE))
 		{
 			lua->ErrorNoHalt("[%s] Global hook is not a table!\n", hook);
-			lua->Pop(2);
+			lua->Pop(1);
 			return reply_info;
 		}
 
@@ -415,16 +415,16 @@ namespace netfilter
 		lua->PushNumber(27015);
 
 		lua->CreateTable();
-		
+
 		lua->PushString(reply_info.game_name.c_str());
 		lua->SetField(-2, "name");//
-		
+
 		lua->PushString(reply_info.map_name.c_str());
 		lua->SetField(-2, "map");
-		
+
 		lua->PushString(reply_info.game_dir.c_str());
 		lua->SetField(-2, "folder");//
-		
+
 		lua->PushString(reply_info.gamemode_name.c_str());
 		lua->SetField(-2, "gamemode");
 
@@ -570,7 +570,7 @@ namespace netfilter
 		if (!lua->IsType(-1, GarrysMod::Lua::Type::TABLE))
 		{
 			lua->ErrorNoHalt("[%s] Global hook is not a table!\n", hook);
-			lua->Pop(2);
+			lua->Pop(1);
 			return newreply;
 		}
 
@@ -589,7 +589,7 @@ namespace netfilter
 
 		if (lua->PCall(3, 1, 0) != 0)
 			lua->ErrorNoHalt("\n[%s] %s\n\n", hook, lua->GetString(-1));
-		
+
 		if (lua->IsType(-1, GarrysMod::Lua::Type::BOOL))
 		{
 			if (!lua->GetBool(-1))
@@ -604,7 +604,7 @@ namespace netfilter
 
 			int count = lua->ObjLen(-1);
 			newreply.count = count;
-			
+
 			std::vector<player_t> newPlayers(count);
 
 			for (int i = 0; i < count; i++)
@@ -625,7 +625,7 @@ namespace netfilter
 
 				lua->GetField(-1, "time");
 				newPlayer.time = lua->GetNumber(-1);
-				lua->Pop(1);				
+				lua->Pop(1);
 
 				lua->Pop(1);
 				newPlayers.at(i) = newPlayer;
@@ -638,7 +638,7 @@ namespace netfilter
 
 		return newreply;
 	}
-	
+
 	static void BuildReplyInfoPacket(reply_info_t info)
 	{
 		info_cache_packet.Reset();
@@ -665,7 +665,7 @@ namespace netfilter
 		// if vac protected, it activates itself some time after startup
 		info_cache_packet.WriteByte(info.secure);
 		info_cache_packet.WriteString(info.game_version.c_str());
-		
+
 		bool notags = info.tags.empty();
 		// 0x80 - port number is present
 		// 0x10 - server steamid is present
@@ -709,7 +709,7 @@ namespace netfilter
 		reply_info_t info = CallInfoHook(from);
 		if(info.dontsend)
 			return PacketType::Invalid;
-		
+
 		BuildReplyInfoPacket(info);
 
 		sendto(
@@ -896,7 +896,7 @@ namespace netfilter
 		}
 
 		//_DebugWarning( "[Query] recvfrom detour called with socket %d, detouring\n", s );
-		
+
 		packet_t p;
 		const bool has_packet = PopPacketFromQueue( p );
 		if( !has_packet )
