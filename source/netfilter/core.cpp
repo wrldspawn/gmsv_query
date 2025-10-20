@@ -393,10 +393,10 @@ namespace netfilter
 	{
 		char hook[] = "A2S_INFO";
 
-		if (!ThreadInMainThread()) {
+		/*if (!ThreadInMainThread()) {
 			Warning("[%s] Called outside of main thread!\n", hook);
 			return reply_info;
-		}
+		}*/
 
 		lua->GetField(GarrysMod::Lua::INDEX_GLOBAL, "hook");
 		if (!lua->IsType(-1, GarrysMod::Lua::Type::TABLE))
@@ -571,10 +571,10 @@ namespace netfilter
 
 		char hook[] = "A2S_PLAYER";
 
-		if (!ThreadInMainThread()) {
+		/*if (!ThreadInMainThread()) {
 			Warning("[%s] Called outside of main thread!\n", hook);
 			return newreply;
-		}
+		}*/
 
 		lua->GetField(GarrysMod::Lua::INDEX_GLOBAL, "hook");
 		if (!lua->IsType(-1, GarrysMod::Lua::Type::TABLE))
