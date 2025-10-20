@@ -393,24 +393,30 @@ namespace netfilter
 	{
 		char hook[] = "A2S_INFO";
 
+		if (!ThreadInMainThread()) {
+			Warning("[%s] Called outside of main thread!\n", hook);
+			return reply_info;
+		}
+
 		lua->GetField(GarrysMod::Lua::INDEX_GLOBAL, "hook");
 		if (!lua->IsType(-1, GarrysMod::Lua::Type::TABLE))
 		{
-			lua->ErrorNoHalt("[%s] Global hook is not a table!\n", hook);
 			lua->Pop(1);
+			Warning("[%s] Missing hook table!\n", hook);
 			return reply_info;
 		}
 
 		lua->GetField(-1, "Run");
-		lua->Remove(-2);
 		if (!lua->IsType(-1, GarrysMod::Lua::Type::FUNCTION))
 		{
-			lua->ErrorNoHalt("[%s] Global hook.Run is not a function!\n", hook);
 			lua->Pop(2);
+			Warning("[%s] hook.Run is not a function!\n", hook);
 			return reply_info;
+		} else {
+			lua->Remove(-2);
+			lua->PushString(hook);
 		}
 
-		lua->PushString(hook);
 		lua->PushString(inet_ntoa(from.sin_addr));
 		lua->PushNumber(27015);
 
@@ -459,8 +465,7 @@ namespace netfilter
 		lua->PushString(reply_info.tags.c_str());
 		lua->SetField(-2, "tags");
 
-		if (lua->PCall(4, 1, 0) != 0)
-			lua->ErrorNoHalt("\n[%s] %s\n\n", hook, lua->GetString(-1));
+		lua->CallFunctionProtected(4, 1, true);
 
 		reply_info_t newreply;
 		newreply.dontsend = false;
@@ -566,29 +571,58 @@ namespace netfilter
 
 		char hook[] = "A2S_PLAYER";
 
+		if (!ThreadInMainThread()) {
+			Warning("[%s] Called outside of main thread!\n", hook);
+			return newreply;
+		}
+
 		lua->GetField(GarrysMod::Lua::INDEX_GLOBAL, "hook");
 		if (!lua->IsType(-1, GarrysMod::Lua::Type::TABLE))
 		{
-			lua->ErrorNoHalt("[%s] Global hook is not a table!\n", hook);
 			lua->Pop(1);
+			Warning("[%s] Missing hook table!\n", hook);
 			return newreply;
 		}
 
 		lua->GetField(-1, "Run");
-		lua->Remove(-2);
 		if (!lua->IsType(-1, GarrysMod::Lua::Type::FUNCTION))
 		{
-			lua->ErrorNoHalt("[%s] Global hook.Run is not a function!\n", hook);
 			lua->Pop(2);
+			Warning("[%s] hook.Run is not a function!\n", hook);
 			return newreply;
+		} else {
+			lua->Remove(-2);
+			lua->PushString(hook);
 		}
 
 		lua->PushString(hook);
 		lua->PushString(inet_ntoa(from.sin_addr));
 		lua->PushNumber(27015);
 
-		if (lua->PCall(3, 1, 0) != 0)
-			lua->ErrorNoHalt("\n[%s] %s\n\n", hook, lua->GetString(-1));
+		lua->CreateTable();
+
+		for (int i = 0; i < newreply.count; i++)
+		{
+			player_t player = newreply.players[i];
+
+			lua->CreateTable();
+
+			lua->PushString(player.name.c_str());
+			lua->SetField(-2, "name");
+
+			lua->PushNumber(player.score);
+			lua->SetField(-2, "score");
+
+			lua->PushNumber(player.time);
+			lua->SetField(-2, "time");
+
+			lua->PushNumber(i + 1);
+			lua->Push(-2);
+			lua->Remove(-3);
+			lua->RawSet(-3);
+		}
+
+		lua->CallFunctionProtected(4, 1, true);
 
 		if (lua->IsType(-1, GarrysMod::Lua::Type::BOOL))
 		{
@@ -750,7 +784,7 @@ namespace netfilter
 			return PacketType::Good;
 
 		if (player.dontsend)
-			return PacketType::Invalid; // dont senkd it
+			return PacketType::Invalid; // dont send it
 
 		BuildReplyPlayerPacket(player);
 
